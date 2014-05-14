@@ -1,0 +1,40 @@
+OASISFormat: 0.3
+OCamlVersion: >= 4.01.0
+Name:        docker
+Version:     0.1
+Synopsis:    Bindings to the Docker API
+Authors:     https://github.com/arjunguha/ocaml-docker
+License:     BSD-3-clause
+Plugins:     META (0.3)
+BuildTools:
+  ocamlbuild,
+  ocamldoc
+
+Library docker
+  Path: lib
+  BuildDepends:
+    core,
+    async,
+    threads,
+    uri,
+    cohttp,
+    cohttp.async,
+    sexplib,
+    yojson,
+    atdgen
+  InternalModules:
+    Docker_j
+  Modules:
+    Docker,
+    Docker_t
+
+Executable odocker
+  Path: odocker
+  MainIs: odocker.ml
+  Install: false
+  BuildDepends:
+    async,
+    core,
+    threads,
+    docker,
+    sexplib

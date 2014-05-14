@@ -1,0 +1,48 @@
+# OASIS_START
+# DO NOT EDIT (digest: 489541749b0b1a3c1c95714288a70b67)
+# Ignore VCS directories, you can use the same kind of rule outside
+# OASIS_START/STOP if you want to exclude directories that contains
+# useless stuff for the build process
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Library docker
+"lib/docker.cmxs": use_docker
+<lib/*.ml{,i}>: package(async)
+<lib/*.ml{,i}>: package(atdgen)
+<lib/*.ml{,i}>: package(cohttp)
+<lib/*.ml{,i}>: package(cohttp.async)
+<lib/*.ml{,i}>: package(core)
+<lib/*.ml{,i}>: package(sexplib)
+<lib/*.ml{,i}>: package(threads)
+<lib/*.ml{,i}>: package(uri)
+<lib/*.ml{,i}>: package(yojson)
+# Executable odocker
+"odocker/odocker.byte": package(async)
+"odocker/odocker.byte": package(atdgen)
+"odocker/odocker.byte": package(cohttp)
+"odocker/odocker.byte": package(cohttp.async)
+"odocker/odocker.byte": package(core)
+"odocker/odocker.byte": package(sexplib)
+"odocker/odocker.byte": package(threads)
+"odocker/odocker.byte": package(uri)
+"odocker/odocker.byte": package(yojson)
+"odocker/odocker.byte": use_docker
+<odocker/*.ml{,i}>: package(async)
+<odocker/*.ml{,i}>: package(atdgen)
+<odocker/*.ml{,i}>: package(cohttp)
+<odocker/*.ml{,i}>: package(cohttp.async)
+<odocker/*.ml{,i}>: package(core)
+<odocker/*.ml{,i}>: package(sexplib)
+<odocker/*.ml{,i}>: package(threads)
+<odocker/*.ml{,i}>: package(uri)
+<odocker/*.ml{,i}>: package(yojson)
+<odocker/*.ml{,i}>: use_docker
+# OASIS_STOP

@@ -1,0 +1,41 @@
+type version = {
+  version <json name="Version">: string;
+  gitCommit <json name="GitCommit">: int;
+  goVersion <json name="GoVersion">: string;
+}
+
+(* Missing CpuShares and OnBuild *)
+type containerConfig = {
+  image <json name="Image"> : string;
+  hostname <json name="Hostname"> : string;
+  user <json name="User"> : string;
+  memory <json name="Memory"> : int <ocaml repr="int64">;
+  memorySwap <json name="MemorySwap"> : int <ocaml repr="int64">;
+  attachStdin <json name="AttachStdin"> : bool;
+  attachStdout <json name="AttachStdout"> : bool;
+  attachStderr <json name="AttachStderr"> : bool;
+  stdinOnce <json name="StdinOnce"> : bool;
+  networkDisabled <json name="NetworkDisabled"> : bool;
+  env <json name="Env"> : string list;
+  workingDir <json name="WorkingDir"> : string;
+  entryPoint <json name="Entrypoint"> : string list;
+  cmd <json name="Cmd"> : string list;
+  tty <json name="Tty"> : bool;
+  openStdin <json name="OpenStdin"> : bool;
+  volumes <json name="Volumes" repr="object"> : (string * string) list;
+  exposedPorts <json name="ExposedPorts" repr="object"> : (string * string) list
+}
+
+type createContainerResponse = {
+  id <json name="Id"> : string;
+  ?warnings <json name="Warnings"> : (string list) option
+}
+
+type waitResponse = {
+  statusCode <json name="StatusCode"> : int
+}
+
+(* Missing LxcConf, PortBindings, PublishAllPorts, and Privileged *)
+type hostConfig = {
+  binds <json name="Binds"> : string list;
+}

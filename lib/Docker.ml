@@ -151,6 +151,24 @@ let delete_container ?(volumes = false) ?(force = false) (id : string)
   | `Not_found -> raise (NoSuchContainer id)
   | _ -> raise (make_exn resp)
 
+cstruct attach {
+  uint8_t typ;
+  uint8_t pad0;
+  uint16_t pad1;
+  uint32_t size
+} as big_endian
+
+let parse_attach (str : string) : string =
+  let rec loop (buf : Cstruct.t) = 
+    if Cstruct.len buf <= 0 then
+      ""
+    else
+      let size = Int32.to_int_exn (get_attach_size buf) in
+      let buf = Cstruct.shift buf 8 in
+      let str = Cstruct.copy buf 0 size in
+      str ^ loop (Cstruct.shift buf size) in
+  loop (Cstruct.of_string str)
+
 let container_logs ?(stdout = false) ?(stderr = false) 
   (id : string) : string Deferred.t =
   let path = "/containers/" ^ id ^ "/attach" in
@@ -164,7 +182,7 @@ let container_logs ?(stdout = false) ?(stderr = false)
   | `OK -> 
     Body.to_string body
     >>= fun body ->
-    return body
+    return (parse_attach body)
   | `Not_found ->
      raise (NoSuchContainer id)
   | _ -> raise (make_exn resp)

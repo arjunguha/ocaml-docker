@@ -21,7 +21,9 @@ Library docker
     cohttp.async,
     sexplib,
     yojson,
-    atdgen
+    atdgen,
+    cstruct,
+    cstruct.syntax
   InternalModules:
     Docker_t,
     Docker_j,

@@ -2,10 +2,16 @@ open Core.Std
 open Async.Std
 
 type hostConfig = Docker_t.hostConfig = {
-  binds: string list
+  binds: string list;
+  containerIDFile: string;
+  lxcConf: string list;
+  privileged: bool;
+  publishAllPorts: bool;
+  portBindings: (string * string) list;
+  links : Yojson.Safe.json
 }
 
-type containerConfig = Docker_t.containerConfig = {
+type containerConfig = Docker_j.containerConfig = {
   image: string;
   hostname: string;
   user: string;
@@ -22,11 +28,12 @@ type containerConfig = Docker_t.containerConfig = {
   cmd: string list;
   tty: bool;
   openStdin: bool;
-  volumes: (string * string) list;
+  volumes: (string * Yojson.Safe.json) list;
+  volumesFrom : string;
   exposedPorts: (string * string) list
 }
 
-type createContainerResponse = Docker_t.createContainerResponse = {
+type createContainerResponse = Docker_j.createContainerResponse = {
   id: string; 
   warnings: (string list) option
 }
@@ -36,6 +43,8 @@ exception NoSuchContainer of string
 exception DockerException of string
 
 val version : unit -> string Deferred.t
+
+val simpleHostConfig : hostConfig
 
 val container_with_cmd : image:string -> string list -> containerConfig
 

@@ -24,7 +24,8 @@ Library docker
     atdgen
   InternalModules:
     Docker_t,
-    Docker_j
+    Docker_j,
+    Docker_atd
   Modules:
     Docker
 

@@ -2,11 +2,16 @@ open Core.Std
 open Async.Std
 open Cohttp
 open Cohttp_async
-open Docker_t
 open Docker_j
 
 type hostConfig = Docker_t.hostConfig = {
-  binds: string list
+  binds: string list;
+  containerIDFile: string;
+  lxcConf: string list;
+  privileged: bool;
+  publishAllPorts: bool;
+  portBindings: (string * string) list;
+  links : Yojson.Safe.json
 }
 
 type containerConfig = Docker_t.containerConfig = {
@@ -26,7 +31,8 @@ type containerConfig = Docker_t.containerConfig = {
   cmd: string list;
   tty: bool;
   openStdin: bool;
-  volumes: (string * string) list;
+  volumes: (string * Yojson.Safe.json) list;
+  volumesFrom : string;
   exposedPorts: (string * string) list
 }
 
@@ -47,6 +53,18 @@ let docker_socket =
 
 let docker_uri (path : string) = Uri.with_path docker_socket path
 
+let headers = Header.init_with "Content-Type" "application/json"
+
+let simpleHostConfig : hostConfig = {
+  binds = [];
+  containerIDFile = "";
+  lxcConf = [];
+  privileged = false;
+  publishAllPorts = false;
+  portBindings = [];
+  links = `Null
+}
+
 let version () : string Deferred.t = 
   Client.get (docker_uri "/version")
   >>= fun (resp, body) ->
@@ -64,14 +82,15 @@ let empty_containerCfg = {
   user = "";
   memory = 0L;
   memorySwap = 0L;
-  attachStdin = false;
+  attachStdin = true;
   attachStdout = true;
   attachStderr = true;
-  stdinOnce = false;
+  stdinOnce = true;
   networkDisabled = false;
   exposedPorts = [];
   volumes = [];
-  openStdin = false;
+  volumesFrom = "";
+  openStdin = true;
   tty = false;
   env = [];
   workingDir = "";
@@ -88,7 +107,8 @@ let container_with_entrypoint ~(image:string) (entrypoint : string list) =
 let create_container (cfg : containerConfig) : 
   createContainerResponse Deferred.t =
   let body = Body.of_string (string_of_containerConfig cfg) in
-  Client.post ~body (docker_uri "/containers/create")
+  printf "Sending %s\n%!"  (string_of_containerConfig cfg);  
+  Client.post ~body ~headers (docker_uri "/v1.10/containers/create")  
   >>= fun (resp, body) ->
   if resp.Cohttp.Response.status = `Created then
     Body.to_string body
@@ -97,12 +117,11 @@ let create_container (cfg : containerConfig) :
   else
     raise (make_exn resp)
 
-let emptyHostCfg = { binds = [] }
-
-let start_container ?(hostConfig = emptyHostCfg)
+let start_container ?(hostConfig = simpleHostConfig)
   (id : string) : unit Deferred.t =
   let body = Body.of_string (string_of_hostConfig hostConfig) in
-  Client.post ~body (docker_uri ("/containers/" ^ id ^ "/start"))
+  printf "Sending  %s\n%!"  (string_of_hostConfig hostConfig);  
+  Client.post ~body ~headers (docker_uri ("/v1.10/containers/" ^ id ^ "/start"))
   >>= fun (resp, body) ->
   match resp.Cohttp.Response.status with
     | `No_content -> return ()

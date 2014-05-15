@@ -4,7 +4,12 @@ type version = {
   goVersion <json name="GoVersion">: string;
 }
 
-(* Missing CpuShares and OnBuild *)
+(* It is common to use JSON-null for optional fields. But, atdgen translates
+   OCaml's None to "None" (or something else, but not null). This helps
+   workaround it. *)
+type dyn <ocaml_json module="Yojson.Safe" t="json"> = abstract
+
+(* Missing CpuShares, DNS, OnBuild *)
 type containerConfig = {
   image <json name="Image"> : string;
   hostname <json name="Hostname"> : string;
@@ -22,7 +27,8 @@ type containerConfig = {
   cmd <json name="Cmd"> : string list;
   tty <json name="Tty"> : bool;
   openStdin <json name="OpenStdin"> : bool;
-  volumes <json name="Volumes" repr="object"> : (string * string) list;
+  volumes <json name="Volumes"> : (string * dyn) list <json repr="object">;
+  volumesFrom <json name="VolumesFrom"> : string;
   exposedPorts <json name="ExposedPorts" repr="object"> : (string * string) list
 }
 
@@ -35,9 +41,15 @@ type waitResponse = {
   statusCode <json name="StatusCode"> : int
 }
 
-(* Missing LxcConf, PortBindings, PublishAllPorts, and Privileged *)
 type hostConfig = {
   binds <json name="Binds"> : string list;
+  containerIDFile <json name="ContainerIDFile"> : string;
+  lxcConf <json name="LxcConf"> : string list;
+  privileged <json name="Privileged"> : bool;
+  publishAllPorts <json name="PublishAllPorts"> : bool;
+  portBindings <json name="PortBindings"> : (string * string)
+    list <json repr="object">;
+  links <json name="Links"> : dyn
 }
 
 type copyRequest = {

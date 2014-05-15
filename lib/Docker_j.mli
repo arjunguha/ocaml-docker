@@ -16,6 +16,11 @@ type createContainerResponse = Docker_t.createContainerResponse = {
   warnings: (string list) option
 }
 
+type copyRequest = Docker_t.copyRequest = {
+  resource: string;
+  hostPath: string
+}
+
 type containerConfig = Docker_t.containerConfig = {
   image: string;
   hostname: string;
@@ -116,6 +121,26 @@ val read_createContainerResponse :
 val createContainerResponse_of_string :
   string -> createContainerResponse
   (** Deserialize JSON data of type {!createContainerResponse}. *)
+
+val write_copyRequest :
+  Bi_outbuf.t -> copyRequest -> unit
+  (** Output a JSON value of type {!copyRequest}. *)
+
+val string_of_copyRequest :
+  ?len:int -> copyRequest -> string
+  (** Serialize a value of type {!copyRequest}
+      into a JSON string.
+      @param len specifies the initial length
+                 of the buffer used internally.
+                 Default: 1024. *)
+
+val read_copyRequest :
+  Yojson.Safe.lexer_state -> Lexing.lexbuf -> copyRequest
+  (** Input JSON data of type {!copyRequest}. *)
+
+val copyRequest_of_string :
+  string -> copyRequest
+  (** Deserialize JSON data of type {!copyRequest}. *)
 
 val write_containerConfig :
   Bi_outbuf.t -> containerConfig -> unit

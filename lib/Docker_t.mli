@@ -9,6 +9,8 @@ type hostConfig = { binds: string list }
 
 type createContainerResponse = { id: string; warnings: (string list) option }
 
+type copyRequest = { resource: string; hostPath: string }
+
 type containerConfig = {
   image: string;
   hostname: string;

@@ -10,8 +10,8 @@ setup.data: setup.ml
 	ocaml setup.ml -configure
 
 build: setup.data setup.ml
-	cd lib && atdgen -t Docker.atd
-	cd lib && atdgen -j Docker.atd
+	cd lib && atdgen -open Docker_atd -t Docker.atd
+	cd lib && atdgen -j -j-std Docker.atd
 	ocaml setup.ml -build -j $(J)
 
 install: setup.data setup.ml

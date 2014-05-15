@@ -107,7 +107,6 @@ let container_with_entrypoint ~(image:string) (entrypoint : string list) =
 let create_container (cfg : containerConfig) : 
   createContainerResponse Deferred.t =
   let body = Body.of_string (string_of_containerConfig cfg) in
-  printf "Sending %s\n%!"  (string_of_containerConfig cfg);  
   Client.post ~body ~headers (docker_uri "/v1.10/containers/create")  
   >>= fun (resp, body) ->
   if resp.Cohttp.Response.status = `Created then
@@ -120,7 +119,6 @@ let create_container (cfg : containerConfig) :
 let start_container ?(hostConfig = simpleHostConfig)
   (id : string) : unit Deferred.t =
   let body = Body.of_string (string_of_hostConfig hostConfig) in
-  printf "Sending  %s\n%!"  (string_of_hostConfig hostConfig);  
   Client.post ~body ~headers (docker_uri ("/v1.10/containers/" ^ id ^ "/start"))
   >>= fun (resp, body) ->
   match resp.Cohttp.Response.status with

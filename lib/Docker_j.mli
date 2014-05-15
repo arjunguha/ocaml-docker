@@ -9,7 +9,17 @@ type version = Docker_t.version = {
   goVersion: string
 }
 
-type hostConfig = Docker_t.hostConfig = { binds: string list }
+type dyn = Yojson.Safe.json
+
+type hostConfig = Docker_t.hostConfig = {
+  binds: string list;
+  containerIDFile: string;
+  lxcConf: string list;
+  privileged: bool;
+  publishAllPorts: bool;
+  portBindings: (string * string) list;
+  links: dyn
+}
 
 type createContainerResponse = Docker_t.createContainerResponse = {
   id: string;
@@ -38,7 +48,8 @@ type containerConfig = Docker_t.containerConfig = {
   cmd: string list;
   tty: bool;
   openStdin: bool;
-  volumes: (string * string) list;
+  volumes: (string * dyn) list;
+  volumesFrom: string;
   exposedPorts: (string * string) list
 }
 
@@ -81,6 +92,26 @@ val read_version :
 val version_of_string :
   string -> version
   (** Deserialize JSON data of type {!version}. *)
+
+val write_dyn :
+  Bi_outbuf.t -> dyn -> unit
+  (** Output a JSON value of type {!dyn}. *)
+
+val string_of_dyn :
+  ?len:int -> dyn -> string
+  (** Serialize a value of type {!dyn}
+      into a JSON string.
+      @param len specifies the initial length
+                 of the buffer used internally.
+                 Default: 1024. *)
+
+val read_dyn :
+  Yojson.Safe.lexer_state -> Lexing.lexbuf -> dyn
+  (** Input JSON data of type {!dyn}. *)
+
+val dyn_of_string :
+  string -> dyn
+  (** Deserialize JSON data of type {!dyn}. *)
 
 val write_hostConfig :
   Bi_outbuf.t -> hostConfig -> unit

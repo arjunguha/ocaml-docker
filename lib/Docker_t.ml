@@ -1,11 +1,20 @@
 (* Auto-generated from "Docker.atd" *)
 
+open Docker_atd
 
 type waitResponse = { statusCode: int }
 
 type version = { version: string; gitCommit: int; goVersion: string }
 
-type hostConfig = { binds: string list }
+type hostConfig = {
+  binds: string list;
+  containerIDFile: string;
+  lxcConf: string list;
+  privileged: bool;
+  publishAllPorts: bool;
+  portBindings: (string * string) list;
+  links: dyn
+}
 
 type createContainerResponse = { id: string; warnings: (string list) option }
 
@@ -28,6 +37,7 @@ type containerConfig = {
   cmd: string list;
   tty: bool;
   openStdin: bool;
-  volumes: (string * string) list;
+  volumes: (string * dyn) list;
+  volumesFrom: string;
   exposedPorts: (string * string) list
 }

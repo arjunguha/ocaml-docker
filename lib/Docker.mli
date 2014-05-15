@@ -1,6 +1,35 @@
 open Core.Std
 open Async.Std
-open Docker_t
+
+type hostConfig = Docker_t.hostConfig = {
+  binds: string list
+}
+
+type containerConfig = Docker_t.containerConfig = {
+  image: string;
+  hostname: string;
+  user: string;
+  memory: Int64.t;
+  memorySwap: Int64.t;
+  attachStdin: bool;
+  attachStdout: bool;
+  attachStderr: bool;
+  stdinOnce: bool;
+  networkDisabled: bool;
+  env: string list;
+  workingDir: string;
+  entryPoint: string list;
+  cmd: string list;
+  tty: bool;
+  openStdin: bool;
+  volumes: (string * string) list;
+  exposedPorts: (string * string) list
+}
+
+type createContainerResponse = Docker_t.createContainerResponse = {
+  id: string; 
+  warnings: (string list) option
+}
 
 exception NoSuchContainer of string
 

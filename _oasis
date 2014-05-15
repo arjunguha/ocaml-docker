@@ -23,10 +23,10 @@ Library docker
     yojson,
     atdgen
   InternalModules:
+    Docker_t,
     Docker_j
   Modules:
-    Docker,
-    Docker_t
+    Docker
 
 Executable odocker
   Path: odocker

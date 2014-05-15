@@ -93,6 +93,18 @@ let wait_for_container (id : string) : int Deferred.t =
     | `Not_found -> raise (NoSuchContainer id)
     | _ -> raise (make_exn resp)
 
+let delete_container ?(volumes = false) ?(force = false) (id : string)
+  : unit Deferred.t =
+  let path = "/containers/" ^ id in
+  let query = [ ("force", string_of_bool force);
+                ("v", string_of_bool volumes) ] in
+  Client.delete (Uri.with_query' (Uri.with_path docker_socket path) query)
+  >>= fun (resp, _) ->
+  match resp.Cohttp.Response.status with
+  | `No_content -> return ()
+  | `Not_found -> raise (NoSuchContainer id)
+  | _ -> raise (make_exn resp)
+
 let container_logs ?(stdout = false) ?(stderr = false) 
   (id : string) : string Deferred.t =
   let path = "/containers/" ^ id ^ "/attach" in
@@ -109,4 +121,16 @@ let container_logs ?(stdout = false) ?(stderr = false)
     return body
   | `Not_found ->
      raise (NoSuchContainer id)
+  | _ -> raise (make_exn resp)
+
+(* TODO(arjun): Does not work. *)
+let copy_from_container ~(id : string) ~(path : string)
+  : (string Pipe.Reader.t) Deferred.t =
+  let path = "/containers/" ^ id ^ "/copy" in
+  let body = Body.of_string (string_of_copyRequest { resource = path; hostPath = "." }) in
+  Client.post ~body (Uri.with_path docker_socket path)
+  >>= fun (resp, body) ->
+  match resp.Cohttp.Response.status with
+  | `OK -> return (Body.to_pipe body)
+  | `Not_found -> raise (NoSuchContainer id)
   | _ -> raise (make_exn resp)

@@ -39,3 +39,8 @@ type waitResponse = {
 type hostConfig = {
   binds <json name="Binds"> : string list;
 }
+
+type copyRequest = {
+  resource <json name="Resource"> : string;
+  hostPath <json name="HostPath"> : string
+}

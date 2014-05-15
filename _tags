@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 489541749b0b1a3c1c95714288a70b67)
+# DO NOT EDIT (digest: 312c55315cf7018ccc74050bd2d9b161)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -20,6 +20,8 @@
 <lib/*.ml{,i}>: package(cohttp)
 <lib/*.ml{,i}>: package(cohttp.async)
 <lib/*.ml{,i}>: package(core)
+<lib/*.ml{,i}>: package(cstruct)
+<lib/*.ml{,i}>: package(cstruct.syntax)
 <lib/*.ml{,i}>: package(sexplib)
 <lib/*.ml{,i}>: package(threads)
 <lib/*.ml{,i}>: package(uri)
@@ -30,6 +32,8 @@
 "odocker/odocker.byte": package(cohttp)
 "odocker/odocker.byte": package(cohttp.async)
 "odocker/odocker.byte": package(core)
+"odocker/odocker.byte": package(cstruct)
+"odocker/odocker.byte": package(cstruct.syntax)
 "odocker/odocker.byte": package(sexplib)
 "odocker/odocker.byte": package(threads)
 "odocker/odocker.byte": package(uri)
@@ -40,9 +44,12 @@
 <odocker/*.ml{,i}>: package(cohttp)
 <odocker/*.ml{,i}>: package(cohttp.async)
 <odocker/*.ml{,i}>: package(core)
+<odocker/*.ml{,i}>: package(cstruct)
+<odocker/*.ml{,i}>: package(cstruct.syntax)
 <odocker/*.ml{,i}>: package(sexplib)
 <odocker/*.ml{,i}>: package(threads)
 <odocker/*.ml{,i}>: package(uri)
 <odocker/*.ml{,i}>: package(yojson)
 <odocker/*.ml{,i}>: use_docker
 # OASIS_STOP
+<lib/*.ml>: syntax_camlp4o

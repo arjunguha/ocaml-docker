@@ -1,8 +1,9 @@
 # OASIS_START
-# DO NOT EDIT (digest: 4d9e522c0d139bb36b07bd9ab7320705)
+# DO NOT EDIT (digest: dae7ae91d0401955b73bc53712bef98a)
 version = "0.1"
 description = "Bindings to the Docker API"
-requires = "core async threads uri cohttp cohttp.async sexplib yojson atdgen"
+requires =
+"core async threads uri cohttp cohttp.async sexplib yojson atdgen cstruct cstruct.syntax"
 archive(byte) = "docker.cma"
 archive(byte, plugin) = "docker.cma"
 archive(native) = "docker.cmxa"
